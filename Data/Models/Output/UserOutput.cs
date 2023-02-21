@@ -1,16 +1,12 @@
-﻿namespace Backend.Data.Database.Entity
+﻿namespace Backend.Data.Models.Output
 {
-    public class User
+    public class UserOutput
     {
         public Guid Id { get; set; }
         public string Email { get; set; }
-        public string Salt { get; set; }
-        public string Password { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public DateTime CreatedAt { get; set; }
         public string PhotoName { get; set; }
-        public bool Deleted { get; set; }
-        public IEnumerable<Reservation> Reservations { get; set; }
     }
 }
