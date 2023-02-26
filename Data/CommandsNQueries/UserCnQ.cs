@@ -50,20 +50,20 @@ namespace Backend.Data.CommandsNQueries
             return _printOutput.User(user);
         }
 
-        protected UserOutput Put(UserPutInput input)
-        {
-            var user = _context.User.FirstOrDefault(user => user.Id == input.Id);
-            if (user == null) return null;
+        //protected UserOutput Put(UserPutInput input)
+        //{
+        //    var user = _context.User.FirstOrDefault(user => user.Id == input.Id);
+        //    if (user == null) return null;
           
-            user.Email = input.Email ?? user.Email;
-            user.Password = _pwdService.HashPassword(input.Password, user.Salt) ?? user.Password;
-            user.FirstName = input.FirstName ?? user.FirstName;
-            user.LastName = input.LastName ?? user.LastName;
-            user.PhotoName = input.PhotoName ?? user.PhotoName;
+        //    user.Email = input.Email ?? user.Email;
+        //    user.Password = _pwdService.HashPassword(input.Password, user.Salt) ?? user.Password;
+        //    user.FirstName = input.FirstName ?? user.FirstName;
+        //    user.LastName = input.LastName ?? user.LastName;
+        //    user.PhotoName = input.PhotoName ?? user.PhotoName;
 
-            _context.SaveChanges();
+        //    _context.SaveChanges();
 
-            return _printOutput.User(user);
-        }
+        //    return _printOutput.User(user);
+        //}
     }
 }

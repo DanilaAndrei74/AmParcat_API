@@ -54,10 +54,10 @@ namespace Backend.Controllers
             return Ok(_printOutput.User(user));
         }
 
-        [HttpPut]
-        public ActionResult<UserOutput> Put(UserPutInput input)
+        [HttpPut("{userId}")]
+        public ActionResult<UserOutput> Put([FromBody] UserPutInput input, Guid userId)
         {
-            var user = _context.User.FirstOrDefault(user => user.Id == input.Id);
+            var user = _context.User.FirstOrDefault(user => user.Id == userId);
             if (user == null) return NotFound();
 
             user.Email = input.Email ?? user.Email;
