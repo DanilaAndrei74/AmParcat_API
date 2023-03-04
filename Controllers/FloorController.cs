@@ -25,7 +25,7 @@ namespace Backend.Controllers
         public ActionResult<List<FloorOutput>> Get()
         {
             IEnumerable<Floor> floors = _context.Floor.Where(floor => floor.Deleted == false);
-            return _printOutput.Floors(floors);
+            return Ok(_printOutput.Floors(floors));
         }
 
         [HttpPost]

@@ -25,7 +25,7 @@ namespace Backend.Controllers
         public ActionResult<List<ZoneOutput>> Get()
         {
             IEnumerable<Zone> zones = _context.Zone.Where(zone => zone.Deleted == false);
-            return _printOutput.Zones(zones);
+            return Ok(_printOutput.Zones(zones));
         }
 
         [HttpPost]
@@ -71,12 +71,12 @@ namespace Backend.Controllers
         }
 
         [HttpDelete("{zoneId}")]
-        public ActionResult Delete(Guid floorId)
+        public ActionResult Delete(Guid zoneId)
         {
-            var floor = _context.Floor.FirstOrDefault(floor => floor.Id == floorId);
-            if (floor == null) return NotFound();
+            var zone = _context.Zone.FirstOrDefault(zone => zone.Id == zoneId);
+            if (zone == null) return NotFound();
 
-            floor.Deleted = true;
+            zone.Deleted = true;
 
             _context.SaveChanges();
 

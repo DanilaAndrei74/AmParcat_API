@@ -25,7 +25,7 @@ namespace Backend.Controllers
         public ActionResult<List<BuildingOutput>> Get()
         {
             IEnumerable<Building> buildings = _context.Building.Where(building => building.Deleted == false);
-            return _printOutput.Buildings(buildings);
+            return Ok(_printOutput.Buildings(buildings));
         }
 
         [HttpPost]

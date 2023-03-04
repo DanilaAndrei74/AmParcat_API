@@ -27,7 +27,7 @@ namespace Backend.Controllers
         public ActionResult<List<UserOutput>> Get()
         {
             IEnumerable<User> users = _context.User.Where(user => user.Deleted == false);
-            return _printOutput.Users(users);
+            return Ok(_printOutput.Users(users));
         }
 
         [HttpPost]
