@@ -13,17 +13,17 @@ namespace Backend.Data.Database.Configuration
             builder.Property(p => p.Id).ValueGeneratedOnAdd();
             builder.Property(p => p.UserId).IsRequired();
             builder.Property(p => p.ParkingSpotId).IsRequired();
-            builder.Property(p => p.Date).IsRequired().ValueGeneratedOnAddOrUpdate();
+            builder.Property(p => p.Date).IsRequired();
             builder.Property(p => p.CreatedAt).IsRequired().HasDefaultValueSql("getdate()");
             builder.Property(p => p.Deleted).HasDefaultValue(false).IsRequired();
 
             builder.HasOne(build => build.User)
                 .WithMany(build => build.Reservations)
-                .HasForeignKey(p => p.Id)
+                .HasForeignKey(p => p.UserId)
                 .IsRequired();
             builder.HasOne(build => build.ParkingSpot)
                 .WithMany(build => build.Reservations)
-                .HasForeignKey(p => p.Id)
+                .HasForeignKey(p => p.ParkingSpotId)
                 .IsRequired();
         }
     }

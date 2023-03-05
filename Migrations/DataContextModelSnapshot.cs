@@ -89,7 +89,7 @@ namespace Backend.Migrations
                     b.Property<int>("Status")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasDefaultValue(1);
+                        .HasDefaultValue(0);
 
                     b.Property<Guid>("ZoneId")
                         .HasColumnType("uniqueidentifier");
@@ -113,7 +113,6 @@ namespace Backend.Migrations
                         .HasDefaultValueSql("getdate()");
 
                     b.Property<DateTime>("Date")
-                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("Deleted")
@@ -128,6 +127,8 @@ namespace Backend.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ParkingSpotId");
 
                     b.HasIndex("UserId");
 
@@ -232,7 +233,7 @@ namespace Backend.Migrations
                 {
                     b.HasOne("Backend.Data.Database.Entity.ParkingSpot", "ParkingSpot")
                         .WithMany("Reservations")
-                        .HasForeignKey("Id")
+                        .HasForeignKey("ParkingSpotId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

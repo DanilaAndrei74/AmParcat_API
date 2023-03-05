@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Backend.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class DB : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -37,7 +37,7 @@ namespace Backend.Migrations
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "getdate()"),
                     PhotoName = table.Column<string>(type: "nvarchar(max)", nullable: false, defaultValue: ""),
-                    Deleted = table.Column<string>(type: "nvarchar(max)", nullable: false, defaultValue: "False")
+                    Deleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false)
                 },
                 constraints: table =>
                 {
@@ -91,7 +91,7 @@ namespace Backend.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ZoneId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Status = table.Column<int>(type: "int", nullable: false, defaultValue: 1),
+                    Status = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
                     Deleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false)
                 },
                 constraints: table =>
@@ -120,8 +120,8 @@ namespace Backend.Migrations
                 {
                     table.PrimaryKey("PK_Reservation", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Reservation_ParkingSpot_Id",
-                        column: x => x.Id,
+                        name: "FK_Reservation_ParkingSpot_ParkingSpotId",
+                        column: x => x.ParkingSpotId,
                         principalTable: "ParkingSpot",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -142,6 +142,11 @@ namespace Backend.Migrations
                 name: "IX_ParkingSpot_ZoneId",
                 table: "ParkingSpot",
                 column: "ZoneId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Reservation_ParkingSpotId",
+                table: "Reservation",
+                column: "ParkingSpotId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Reservation_UserId",

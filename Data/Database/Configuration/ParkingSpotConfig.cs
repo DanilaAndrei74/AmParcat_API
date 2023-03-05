@@ -12,13 +12,13 @@ namespace Backend.Data.Database.Configuration
             builder.Property(p => p.Id).ValueGeneratedOnAdd();
             builder.Property(p => p.ZoneId).IsRequired();
             builder.Property(p => p.Name).IsRequired();
-            builder.Property(p => p.Status).IsRequired().HasDefaultValue(1);
+            builder.Property(p => p.Status).IsRequired().HasDefaultValue(0);
             builder.Property(p => p.Deleted).HasDefaultValue(false).IsRequired();
 
             builder.HasMany(build => build.Reservations)
-                .WithOne(build => build.ParkingSpot)
-                .HasForeignKey(p => p.ParkingSpotId)
-                .IsRequired();
+                 .WithOne(build => build.ParkingSpot)
+                 .HasForeignKey(p => p.ParkingSpotId)
+                 .IsRequired();
             builder.HasOne(build => build.Zone)
                 .WithMany(build => build.ParkingSpots)
                 .HasForeignKey(p => p.ZoneId)
