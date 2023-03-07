@@ -126,6 +126,7 @@ namespace Backend.Services
                     Id = parkingSpot.Id,
                     Name = parkingSpot.Name,
                     ZoneId = parkingSpot.ZoneId,
+                    Status = parkingSpot.Status,
                 });
             }
             return output;
@@ -138,7 +139,25 @@ namespace Backend.Services
                 Id = parkingSpot.Id,
                 Name = parkingSpot.Name,
                 ZoneId= parkingSpot.ZoneId,
+                Status= parkingSpot.Status,
             };
+        }
+
+        public List<ParkingSpotWithReservationOutput> ParkingSpotsWithReservation(List<ParkingSpotWithReservation> parkingSpotsWithReservation)
+        {
+            var output = new List<ParkingSpotWithReservationOutput>();
+            foreach (var parkingSpot in parkingSpotsWithReservation)
+            {
+                output.Add(new ParkingSpotWithReservationOutput
+                {
+                    Id = parkingSpot.ParkingSpot.Id,
+                    Name = parkingSpot.ParkingSpot.Name,
+                    ZoneId = parkingSpot.ParkingSpot.ZoneId,
+                    Status = parkingSpot.ParkingSpot.Status,
+                    Reservation = parkingSpot.Reservation
+                });
+            }
+            return output;
         }
         #endregion
         #region Reservation

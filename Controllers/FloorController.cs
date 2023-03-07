@@ -83,5 +83,12 @@ namespace Backend.Controllers
 
             return NoContent();
         }
+
+        [HttpGet("{buildingId}")]
+        public ActionResult<List<FloorOutput>> GetFloorsByBuildingId(Guid buildingId)
+        {
+            IEnumerable<Floor> floors = _context.Floor.Where(floor => floor.Deleted == false && floor.BuildingId == buildingId);
+            return Ok(_printOutput.Floors(floors));
+        }
     }
 }

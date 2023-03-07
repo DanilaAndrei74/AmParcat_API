@@ -50,6 +50,7 @@ namespace Backend.Controllers
         [HttpPost]
         public ActionResult SeedDatabase()
         {
+            //PROBLEMA E IN METODA ASTA
             foreach (var building in buildings)
             {
                 _context.Add(building);

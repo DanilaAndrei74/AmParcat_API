@@ -5,6 +5,7 @@ using Backend.Data.Models.Output;
 using Backend.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Controllers
 {
@@ -81,6 +82,37 @@ namespace Backend.Controllers
             _context.SaveChanges();
 
             return NoContent();
+        }
+
+        [HttpGet("test/{zoneId}")]
+        public ActionResult<List<ParkingSpotOutput>> GetParkingSpotByZoneId(Guid zoneId)
+        {
+            IEnumerable<ParkingSpot> parkingSpots = _context.ParkingSpot.Where(parkingSpot => parkingSpot.ZoneId == zoneId);
+            return Ok(_printOutput.ParkingSpots(parkingSpots));
+        }
+
+        [HttpGet("{zoneId}")]
+        public ActionResult<List<ParkingSpotWithReservationOutput>> GetParkingSpotWithReservationByZoneId(Guid zoneId, [FromQuery] DateTime date)
+        {
+            IEnumerable<ParkingSpot> parkingSpots = _context.ParkingSpot.Where(parkingSpot => parkingSpot.Deleted == false && parkingSpot.ZoneId == zoneId);
+            IEnumerable<Reservation> reservations = _context.Reservation.Where(reservation => reservation.Deleted == false && reservation.Date == date);
+            var parkingSpotsWithReservation = new List<ParkingSpotWithReservation>();
+            foreach(var parkingSpot in parkingSpots)
+            {
+                foreach (var reservation in reservations)
+                {
+                    var reservationAddOn = new ReservationAddOn();
+                    if (reservation.ParkingSpotId == parkingSpot.Id) reservationAddOn = new ReservationAddOn
+                    {
+                        UserId = reservation.UserId,
+                        ReservationId = reservation.UserId,
+                        Name = reservation.User.FirstName + " " + reservation.User.LastName,
+                    };
+                    parkingSpotsWithReservation.Add(new ParkingSpotWithReservation { ParkingSpot = parkingSpot, Reservation = reservationAddOn });
+                }
+            }
+
+            return Ok(_printOutput.ParkingSpotsWithReservation(parkingSpotsWithReservation));
         }
     }
 }
