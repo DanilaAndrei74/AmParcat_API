@@ -7,7 +7,7 @@ using System;
 
 namespace Backend.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("ADMIN")]
     [ApiController]
     public class ADMIN : ControllerBase
     {
@@ -44,46 +44,40 @@ namespace Backend.Controllers
 
         private string Test = "Test";
         private int numberOfReservations = 40;
+        private int numberOfParkingSpots = 10;
         #endregion
 
         #region SeedDatabase
-        [HttpPost]
+        [HttpPost("SeedDatabase")]
         public ActionResult SeedDatabase()
         {
             //PROBLEMA E IN METODA ASTA
             foreach (var building in buildings)
             {
-                _context.Add(building);
-                _context.SaveChanges();
+                SeedBuilding(building);
+
                 foreach (var floor in floors)
                 {
-                    floor.Id = Guid.NewGuid();
-                    floor.BuildingId = building.Id;
-                    floor.Building = building;
-                    _context.Add(floor);
-                    _context.SaveChanges();
+                    SeedFloor(building, floor);
                     foreach (var zone in zones)
                     {
-                        zone.Id = Guid.NewGuid();
-                        zone.Floor = floor;
-                        zone.FloorId = floor.Id;
-                        _context.Add(zone);
-                        _context.SaveChanges();
-                        for (var i = 1; i <= 20; i++)
+                        SeedZone(floor, zone);
+                        for (var i = 1; i <= numberOfParkingSpots; i++)
                         {
                             var spot = new ParkingSpot
                             {
-                                Id = Guid.NewGuid(),
                                 Name = i.ToString(),
                                 Zone = zone,
                                 ZoneId = zone.Id,
+                                Id = Guid.NewGuid()
                             };
                             _context.Add(spot);
-                            _context.SaveChanges();
+                            
                         }
                     }
                 }
             }
+            _context.SaveChanges();
 
             foreach (var user in users)
             {
@@ -106,10 +100,33 @@ namespace Backend.Controllers
 
             return Created("Database seeded succesfully", null);
         }
+
+
+        private void SeedBuilding(Building building)
+        {
+            building.Id = Guid.NewGuid();
+            _context.Add(building);
+        }
+
+        private void SeedFloor (Building building, Floor floor)
+        {
+            floor.Id = Guid.NewGuid();
+            floor.BuildingId = building.Id;
+            floor.Building = building;
+            _context.Add(floor);
+        }
+
+        private void SeedZone(Floor floor, Zone zone)
+        {
+            zone.Id = Guid.NewGuid();
+            zone.Floor = floor;
+            zone.FloorId = floor.Id;
+            _context.Add(zone);
+        }
         #endregion
 
         #region CreateReservations
-        [HttpPost("{date}")]
+        [HttpPost("Reservation/{date}")]
         public ActionResult CreateReservations(DateTime date)
         {
             int take = numberOfReservations;
