@@ -95,21 +95,25 @@ namespace Backend.Controllers
         public ActionResult<List<ParkingSpotWithReservationOutput>> GetParkingSpotWithReservationByZoneId(Guid zoneId, [FromQuery] DateTime date)
         {
             IEnumerable<ParkingSpot> parkingSpots = _context.ParkingSpot.Where(parkingSpot => parkingSpot.Deleted == false && parkingSpot.ZoneId == zoneId);
-            IEnumerable<Reservation> reservations = _context.Reservation.Where(reservation => reservation.Deleted == false && reservation.Date == date);
+            var reservations = new List<Reservation>();
+            using(var Context = new DataContext(new DbContextOptions<DataContext>()))
+            {
+               reservations = _context.Reservation.Include("User").Where(reservation => reservation.Deleted == false && reservation.Date == date && reservation.ParkingSpot.ZoneId == zoneId).ToList();
+            }
+          
             var parkingSpotsWithReservation = new List<ParkingSpotWithReservation>();
             foreach(var parkingSpot in parkingSpots)
             {
+                var reservationAddOn = new ReservationAddOn();
                 foreach (var reservation in reservations)
                 {
-                    var reservationAddOn = new ReservationAddOn();
-                    if (reservation.ParkingSpotId == parkingSpot.Id) reservationAddOn = new ReservationAddOn
-                    {
-                        UserId = reservation.UserId,
-                        ReservationId = reservation.UserId,
-                        Name = reservation.User.FirstName + " " + reservation.User.LastName,
-                    };
-                    parkingSpotsWithReservation.Add(new ParkingSpotWithReservation { ParkingSpot = parkingSpot, Reservation = reservationAddOn });
+                    if (reservation.ParkingSpotId != parkingSpot.Id) continue;
+
+                    reservationAddOn.UserId = reservation.UserId;
+                    reservationAddOn.ReservationId = reservation.UserId;
+                    reservationAddOn.Name = reservation.User.FirstName + " " + reservation.User.LastName;
                 }
+                parkingSpotsWithReservation.Add(new ParkingSpotWithReservation { ParkingSpot = parkingSpot, Reservation = reservationAddOn });
             }
 
             return Ok(_printOutput.ParkingSpotsWithReservation(parkingSpotsWithReservation));
