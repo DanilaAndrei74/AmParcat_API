@@ -61,22 +61,29 @@ namespace Backend.Controllers
                     SeedFloor(building, floor);
                     foreach (var zone in zones)
                     {
-                        SeedZone(floor, zone);
-                        for (var i = 1; i <= numberOfParkingSpots; i++)
-                        {
-                            var spot = new ParkingSpot
-                            {
-                                Name = i.ToString(),
-                                Zone = zone,
-                                ZoneId = zone.Id,
-                                Id = Guid.NewGuid()
-                            };
-                            _context.Add(spot);
-                            
-                        }
+                        SeedZone(floor, zone);           
                     }
                 }
             }
+            _context.SaveChanges();
+
+            var zonesInDb = _context.Zone.Where(zone => zone.Deleted == false);
+            foreach(var zone in zonesInDb)
+            {
+                for (var i = 1; i <= numberOfParkingSpots; i++)
+                {
+                    var spot = new ParkingSpot
+                    {
+                        Name = i.ToString(),
+                        Zone = zone,
+                        ZoneId = zone.Id,
+                        Id = Guid.NewGuid()
+                    };
+                    _context.Add(spot);
+
+                }
+            }
+
             _context.SaveChanges();
 
             foreach (var user in users)
@@ -106,6 +113,7 @@ namespace Backend.Controllers
         {
             building.Id = Guid.NewGuid();
             _context.Add(building);
+            _context.SaveChanges();
         }
 
         private void SeedFloor (Building building, Floor floor)
@@ -114,6 +122,7 @@ namespace Backend.Controllers
             floor.BuildingId = building.Id;
             floor.Building = building;
             _context.Add(floor);
+            _context.SaveChanges();
         }
 
         private void SeedZone(Floor floor, Zone zone)
@@ -122,6 +131,7 @@ namespace Backend.Controllers
             zone.Floor = floor;
             zone.FloorId = floor.Id;
             _context.Add(zone);
+            _context.SaveChanges();
         }
         #endregion
 
